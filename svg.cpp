@@ -6,6 +6,12 @@ using namespace std;
 const size_t SCREEN_WIDTH = 80;
 const size_t MAX_ASTERISK = SCREEN_WIDTH - 3 - 1;
 
+void foo(int Dash_length, int Void_length, double top, int BIN_HEIGHT, int max_bin_count)
+{
+    cout << "<line x1='50' y1='" <<  top + BIN_HEIGHT + 5 <<"' x2='" << max_bin_count * 50 << "' y2='" <<  top + BIN_HEIGHT + 5
+    <<"' stroke='black' stroke-dasharray='" << Dash_length  << " " << Void_length << "' />";
+}
+
 void svg_begin(double width, double height)
 {
     cout << "<?xml version='1.0' encoding='UTF-8'?>\n";
@@ -32,6 +38,15 @@ void svg_end()
 
 void show_histogram_svg(const vector<size_t>& bins)
 {
+    //Индивидуальное задание
+    int Dash_length = 0;
+    int Void_length = 0;
+
+    cerr << "Enter the length of the dash :  ";
+    cin >> Dash_length;
+    cerr << "Enter the length of the skip :  ";
+    cin >> Void_length;
+
     const auto IMAGE_WIDTH = 400;
     const auto IMAGE_HEIGHT = 300;
     const auto TEXT_LEFT = 20;
@@ -42,13 +57,12 @@ void show_histogram_svg(const vector<size_t>& bins)
 
     double top = 0;
 
-    //Маштабирование
+    //Маcштабирование
     int max_bin_count = bins[0];
 
     for (int i = 0; i < bins.size(); i++)
     if (bins[i] > max_bin_count)
     max_bin_count = bins[i];
-
     for (size_t i=0; i< bins.size(); ++i)
     {
         int height = bins[i];
@@ -64,9 +78,13 @@ void show_histogram_svg(const vector<size_t>& bins)
     {
     const double bin_width = BLOCK_WIDTH * bin;
     svg_text(TEXT_LEFT, top + TEXT_BASELINE, to_string(bin));
-    svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT, "blue", "#aaffaa");
-    top += BIN_HEIGHT;
+
+    foo(Dash_length, Void_length, top, BIN_HEIGHT, max_bin_count);
+
+    svg_rect(TEXT_WIDTH, top, bin_width, BIN_HEIGHT, "lime", "#00ff00");
+    top += BIN_HEIGHT +10;
     }
+
 
     svg_end();
 
