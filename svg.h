@@ -3,6 +3,7 @@
 #include "histogram.h"
 #include <string>
 
+void foo(int Dash_length, int Void_length, double top, int BIN_HEIGHT, int max_bin_count);
 void show_histogram_svg(const vector<size_t>& bins);
 void svg_begin(double width, double height);
 void svg_text(double left, double baseline, string text);
