@@ -8,22 +8,22 @@ using namespace std;
 const size_t SCREEN_WIDTH = 80;
 const size_t MAX_ASTERISK = SCREEN_WIDTH - 3 - 1;
 
-vector<size_t>make_histogram(vector<double>numbers, size_t bin_count)
+vector<size_t>make_histogram(Input& name)
 {
-	vector<size_t>bins(bin_count);
+	vector<size_t>bins(name.bin_count);
 	double min, max;
-	find_minmax(numbers, min, max);
-    double bin_size = (max - min) / bin_count;
+	find_minmax(name.numbers, min, max);
+    double bin_size = (max - min) / name.bin_count;
 
-	for (size_t i = 0; i < numbers.size(); i++)
+	for (size_t i = 0; i < name.numbers.size(); i++)
 	{
 		bool found = false;
-		for (size_t j = 0; (j < bin_count - 1) && !found; j++)
+		for (size_t j = 0; (j < name.bin_count - 1) && !found; j++)
 		{
 			auto lo = min + j * bin_size;
 			auto hi = min + (j + 1) * bin_size;
 
-			if ((lo <= numbers[i]) && (numbers[i] < hi))
+			if ((lo <= name.numbers[i]) && (name.numbers[i] < hi))
 			{
 				bins[j]++;
 				found = true;
@@ -32,7 +32,7 @@ vector<size_t>make_histogram(vector<double>numbers, size_t bin_count)
 		}
 		if (!found)
 		{
-			bins[bin_count - 1]++;
+			bins[name.bin_count - 1]++;
 		}
 	}
 
@@ -92,20 +92,17 @@ vector<double> input_numbers(istream& in, size_t count)
 	return result;
 }
 
-struct Input
-{
-    vector<double> numbers;
-    size_t bin_count;
-};
 
 
-Input read_input(istream& in)
+Input read_input(istream& in, bool prompt)
 {
     Input data;
 
+    if(prompt)
     cerr << "Enter number count: ";
     size_t number_count;
     in >> number_count;
+    //input_numbers(cin, name.numbers, number_count, prompt)
 
     cerr << "Enter numbers: ";
     data.numbers = input_numbers(in, number_count);
@@ -121,10 +118,13 @@ Input read_input(istream& in)
 int main()
 {
     Input name;
-    name = read_input(cin);
+    const auto input = read_input(cin, true);
     vector<size_t>bins(name.bin_count);
 
-    make_histogram(name.numbers, name.bin_count);
+    //make_histogram(name.numbers, name.bin_count);
+    make_histogram(name);
+
+
 
 	show_histogram_svg (bins);
 	return 0;
