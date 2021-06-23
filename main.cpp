@@ -102,11 +102,11 @@ Input read_input(istream& in, bool prompt)
     cerr << "Enter number count: ";
     size_t number_count;
     in >> number_count;
-    //input_numbers(cin, name.numbers, number_count, prompt)
 
     cerr << "Enter numbers: ";
     data.numbers = input_numbers(in, number_count);
 
+    if(prompt)
     cerr << "Enter bin count: ";
     in >> data.bin_count;
 
@@ -121,7 +121,6 @@ int main()
     const auto input = read_input(cin, true);
     vector<size_t>bins(name.bin_count);
 
-    //make_histogram(name.numbers, name.bin_count);
     make_histogram(name);
 
 
