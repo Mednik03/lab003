@@ -54,14 +54,10 @@ vector <size_t>show_histogram_text(vector<size_t>bins)
 		{
 			if (x < 100)
 				cout << " ";
-
 			if (x < 10)
 				cout << " ";
-
 			cout << x << "|";
-
 			size_t height = 76 * (static_cast<double> (x) / max_count);
-
 			for (size_t j = 0; j < height; j++)
 				cout << "*";
 			cout << endl;
@@ -74,12 +70,9 @@ vector <size_t>show_histogram_text(vector<size_t>bins)
 		{
 			if (x < 100)
 				cout << " ";
-
 			if (x < 10)
 				cout << " ";
-
 			cout << x << "|";
-
 			for (size_t j = 0; j < x; j++)
 				cout << "*";
 			cout <<  endl;
@@ -89,27 +82,50 @@ vector <size_t>show_histogram_text(vector<size_t>bins)
 }
 
 
-vector<double> input_numbers(size_t count)
+vector<double> input_numbers(istream& in, size_t count)
 {
 	vector<double> result(count);
 	for (size_t i = 0; i < count; i++)
 	{
-		cin  >> result[i];
+		in  >> result[i];
 	}
 	return result;
 }
 
+struct Input
+{
+    vector<double> numbers;
+    size_t bin_count;
+};
+
+
+Input read_input(istream& in)
+{
+    Input data;
+
+    cerr << "Enter number count: ";
+    size_t number_count;
+    in >> number_count;
+
+    cerr << "Enter numbers: ";
+    data.numbers = input_numbers(in, number_count);
+
+    cerr << "Enter bin count: ";
+    in >> data.bin_count;
+
+    return data;
+}
+
+
+
 int main()
 {
-	size_t i;
-	size_t number_count;
-	cerr << "Enter number count: ";
-	cin >> number_count;
-	const auto numbers = input_numbers(number_count);
-	size_t bin_count;
-	cerr << "bin_count: ";
-	cin >> bin_count;
-	const auto bins = make_histogram(numbers, bin_count);
+    Input name;
+    name = read_input(cin);
+    vector<size_t>bins(name.bin_count);
+
+    make_histogram(name.numbers, name.bin_count);
+
 	show_histogram_svg (bins);
 	return 0;
 }
