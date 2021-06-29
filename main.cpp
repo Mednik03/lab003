@@ -5,11 +5,29 @@
 #include <string>
 #include "histogram.h"
 #include "svg.h"
+#include <windows.h>
+
 
 using namespace std;
 
 const size_t SCREEN_WIDTH = 80;
 const size_t MAX_ASTERISK = SCREEN_WIDTH - 3 - 1;
+
+int printf(const char* format)
+{
+    const char* name = "Commander Shepard";
+    int year = 2154;
+    printf("%s was born in %d.\n", name, year);
+    return 0;
+}
+
+
+
+
+
+
+
+
 
 
 vector<size_t>make_histogram(Input& name)
@@ -169,14 +187,47 @@ Input download(const string& address)
 
     return read_input(buffer, false);
 }
-
-string make_info_text()
+/*
+string make_info_text(int n)
 {
     stringstream buffer;
-    // TODO: получить версию системы, записать в буфер.
-    // TODO: получить имя компьютера, записать в буфер.
+
+    DWORD dwVersion = 0;
+    dwVersion = GetVersion();
+
+    DWORD mask = 0x40000000;
+
+    if ((dwVersion & mask) == 0) {
+
+    mask = 0xFFFF;
+
+    DWORD version = dwVersion & mask;
+
+    DWORD version_major = 0;
+    DWORD version_minor = 0;
+
+    mask = 0xFF;
+
+    version_major = dwVersion & mask;
+
+    version_minor = (dwVersion>>8) & mask;
+
+    DWORD platform = dwVersion >> 16;
+
+    char infoBuf[INFO_BUFFER_SIZE];
+    DWORD bufCharCount = INFO_BUFFER_SIZE;
+
+    GetUserName(infoBuf, &bufCharCount);
+
+
+    if(n == 0)
+        buffer << "Windows v" << version_major << "." << version_minor << "(" << platform << ")";
+    if(n == 1)
+        buffer << "Computer name: " << infoBuf;
+
     return buffer.str();
 }
+}*/
 
 int main(int argc, char* argv[])
 {
