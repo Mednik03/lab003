@@ -170,6 +170,13 @@ Input download(const string& address)
     return read_input(buffer, false);
 }
 
+string make_info_text()
+{
+    stringstream buffer;
+    // TODO: получить версию системы, записать в буфер.
+    // TODO: получить имя компьютера, записать в буфер.
+    return buffer.str();
+}
 
 int main(int argc, char* argv[])
 {
