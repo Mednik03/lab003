@@ -11,6 +11,7 @@ using namespace std;
 const size_t SCREEN_WIDTH = 80;
 const size_t MAX_ASTERISK = SCREEN_WIDTH - 3 - 1;
 
+
 vector<size_t>make_histogram(Input& name)
 {
     vector<size_t>bins(name.bin_count);
@@ -82,7 +83,25 @@ vector <size_t>show_histogram_text(vector<size_t>bins)
         }
     }
     return bins;
+
 }
+
+
+size_t write_data(void* items, size_t item_size, size_t item_count, void* ctx)
+{
+    auto data_size = item_size * item_count;
+
+    stringstream* buffer = reinterpret_cast<stringstream*>(ctx);
+
+    buffer->write(reinterpret_cast<const char*>(items), data_size);
+
+    return data_size;
+}
+
+
+
+
+
 
 
 vector<double> input_numbers(istream& in, size_t count)
@@ -94,7 +113,6 @@ vector<double> input_numbers(istream& in, size_t count)
     }
     return result;
 }
-
 
 
 Input read_input(istream& in, bool prompt)
@@ -116,41 +134,59 @@ Input read_input(istream& in, bool prompt)
     return data;
 }
 
-    int main(int argc, char* argv[])
+
+Input download(const string& address)
+{
+    stringstream buffer;
+
+    CURL *curl = curl_easy_init();
+
+    if(curl)
+
     {
-        if(argc > 1)
-        {
-            cout << "argc :  " << argc << endl;
+        CURLcode res;
+        curl_easy_setopt(curl, CURLOPT_URL, &buffer);
 
-            for(int i = 0; i < argc; ++i)
-                cout << "argv[" << i << "] :  " << argv[i] << endl;
-            return 0;
-        }
-
-        curl_global_init(CURL_GLOBAL_ALL);
-
-        CURL *curl = curl_easy_init();
-        if(curl)
-
-        {
-            CURLcode res;
-            curl_easy_setopt(curl, CURLOPT_URL, argv[1]);
-
-            res = curl_easy_perform(curl);
-            if (res != 0)
+        res = curl_easy_perform(curl);
+        if (res != 0)
         {
 
             cerr<< "curl_easy_perform() failed: %s\n"<< curl_easy_strerror(res);
             exit(1);
         }
-            curl_easy_cleanup(curl);
+
+
+        if(res == CURLE_OK)
+        {
+            long req;
+            res = curl_easy_getinfo(curl, CURLINFO_REQUEST_SIZE, &req);
+            if(!res)
+                fprintf(stderr,"Request size: %ld bytes\n", req);
+
         }
-
-        Input name;
-        const auto input = read_input(cin, true);
-        vector<size_t>bins(name.bin_count);
-
-        make_histogram(name);
-        show_histogram_svg (bins);
-        return 0;
+        curl_easy_cleanup(curl);
     }
+
+    return read_input(buffer, false);
+}
+
+
+int main(int argc, char* argv[])
+{
+
+    Input name;
+    if (argc > 1)
+    {
+        name = download(argv[1]);
+    }
+    else
+    {
+        name = read_input(cin, true);
+    }
+
+    curl_global_init(CURL_GLOBAL_ALL);
+
+    vector<size_t>bins = make_histogram(name);
+    show_histogram_svg (bins);
+    return 0;
+}
